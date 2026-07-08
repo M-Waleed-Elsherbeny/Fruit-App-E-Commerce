@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:fruit_app/features/splash/screen/splash_screen.dart';
+import 'package:fruit_app/core/styles/colors/app_colors_manager.dart';
+import 'package:fruit_app/features/home/screen/home_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -23,9 +24,11 @@ class MyApp extends StatelessWidget {
           title: 'Fruit App',
           debugShowCheckedModeBanner: false,
           theme: ThemeData(
-            colorScheme: .fromSeed(seedColor: Colors.deepPurple),
+            scaffoldBackgroundColor: AppColorsManager.kScaffoldColor,
+            colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           ),
-          home: const SplashScreen(),
+
+          home: const HomeScreen(),
         );
       },
     );
