@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
       minTextAdapt: true,
       splitScreenMode: true,
       // Use builder only if you need to use library outside ScreenUtilInit context
-      builder: (_, _) {
+      builder: (_, child) {
         return MaterialApp(
           title: 'Fruit App',
           debugShowCheckedModeBanner: false,
@@ -27,7 +27,6 @@ class MyApp extends StatelessWidget {
             scaffoldBackgroundColor: AppColorsManager.kScaffoldColor,
             colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           ),
-
           home: const HomeScreen(),
         );
       },

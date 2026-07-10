@@ -25,4 +25,11 @@ class AppTextStyle {
     fontFamily: GoogleFonts.inter().fontFamily,
     color: AppColorsManager.kGreyColor,
   );
+
+  static TextStyle font16WhiteW600 = TextStyle(
+    fontSize: 16.sp,
+    fontWeight: FontWeight.w600,
+    fontFamily: GoogleFonts.inter().fontFamily,
+    color: AppColorsManager.kScaffoldColor,
+  );
 }
