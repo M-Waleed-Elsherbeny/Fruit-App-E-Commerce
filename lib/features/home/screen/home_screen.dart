@@ -8,6 +8,7 @@ import 'package:fruit_app/core/styles/fonts/app_text_style.dart';
 import 'package:fruit_app/core/utils/spacer.dart';
 import 'package:fruit_app/features/home/models/card_item_model.dart';
 import 'package:fruit_app/features/home/models/category_model.dart';
+import 'package:fruit_app/features/home/widgets/product_items.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -31,7 +32,7 @@ class _HomeScreenState extends State<HomeScreen> {
     CategoryModel(name: "Vegetables", image: AppAssets.vegetables),
   ];
 
-  List<CardItemModel> cardItems = [
+  List<CardItemModel> productItems = [
     CardItemModel(
       name: "Banana",
       rating: "4.5",
@@ -60,7 +61,30 @@ class _HomeScreenState extends State<HomeScreen> {
       price: "8.00",
       image: AppAssets.pepper,
     ),
+    CardItemModel(
+      name: "Pepper",
+      rating: "4.0",
+      reviews: "(80)",
+      price: "8.00",
+      image: AppAssets.milkEgg,
+    ),
   ];
+
+  List<CardItemModel> productCart = [];
+
+  void addToCart(CardItemModel product) {
+    setState(() {
+      if (productCart.contains(product)) {
+        productCart.remove(product);
+      } else {
+        productCart.add(product);
+      }
+    });
+  }
+
+  bool isSelected(CardItemModel product) {
+    return productCart.contains(product);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -83,7 +107,6 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
       ),
-
       body: SafeArea(
         child: ListView(
           children: [
@@ -146,7 +169,6 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                   heightSpace(17),
-
                   Row(
                     children: [
                       Text("Fruits", style: AppTextStyle.font16BlackW600),
@@ -156,83 +178,97 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   heightSpace(17),
 
-                  // Items Card Section
-                  SizedBox(
-                    height: 200.h,
-                    child: ListView.separated(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: cardItems.length,
-                      separatorBuilder: (context, index) {
-                        return widthSpace(20);
-                      },
-                      itemBuilder: (context, index) {
-                        return Stack(
-                          children: [
-                            Container(
-                              width: 170.w,
-                              height: 245.h,
-                              decoration: BoxDecoration(
-                                color: AppColorsManager.kLightPrimaryColor,
-                                borderRadius: BorderRadius.circular(10.r),
-                              ),
+                  // Product Items Card Section
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: List.generate(productItems.length, (index) {
+                        final product = productItems[index];
+                        return ProductItems(
+                          image: product.image,
+                          name: product.name,
+                          rating: product.rating,
+                          reviews: product.reviews,
+                          price: product.price,
+                          icon: IconButton(
+                            onPressed: () => addToCart(product),
+                            icon: isSelected(product)
+                                ? const Icon(
+                                    Icons.clear_outlined,
+                                    color: Colors.red,
+                                  )
+                                : const Icon(
+                                    Icons.add_shopping_cart_outlined,
+                                    color: AppColorsManager.kPrimaryColor,
+                                  ),
+                            style: IconButton.styleFrom(
+                              backgroundColor: AppColorsManager.kScaffoldColor,
                             ),
-                            Container(
-                              width: 170.w,
-                              height: 120.h,
-                              decoration: BoxDecoration(
-                                color: AppColorsManager.kBackgroundColor,
-                                borderRadius: BorderRadius.circular(10.r),
-                              ),
-                              alignment: Alignment.center,
-                              child: Image.asset(
-                                cardItems[index].image,
-                                // width: 150.w,
-                                // height: 120.h,
-                                fit: BoxFit.contain,
-                              ),
-                            ),
-                            Positioned(
-                              bottom: 5,
-                              left: 5,
-                              right: 5,
-                              child: Container(
-                                width: 170.w,
-                                height: 75.h,
-                                decoration: BoxDecoration(
-                                  color: AppColorsManager.kTransparentColor,
-                                  borderRadius: BorderRadius.circular(10.r),
-                                ),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    heightSpace(8),
-                                    Text(
-                                      cardItems[index].name,
-                                      style: AppTextStyle.font16BlackW600,
-                                    ),
-                                    heightSpace(4),
-                                    Text(
-                                      "⭐ ${cardItems[index].rating} (${cardItems[index].reviews})",
-                                      style: AppTextStyle.font12GreyW600,
-                                    ),
-                                    heightSpace(4),
-                                    Text(
-                                      cardItems[index].price,
-                                      style: AppTextStyle.font16BlackW600,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ],
+                          ),
                         );
-                      },
+                      }),
                     ),
                   ),
                 ],
               ),
             ),
+            Container(
+                height: 60.h,
+                padding: EdgeInsets.symmetric(horizontal: 10.w),
+                margin: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
+                decoration: BoxDecoration(
+                  color: AppColorsManager.kPrimaryColor,
+                  borderRadius: BorderRadius.circular(10.r),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    SizedBox(
+                      width: 160.w,
+                      child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemBuilder: (context, index) {
+                          return Container(
+                            width: 50.w,
+                            height: 50.h,
+                            padding: EdgeInsets.all(5.w),
+                            decoration: const BoxDecoration(
+                              color: AppColorsManager.kScaffoldColor,
+                              shape: BoxShape.circle,
+                            ),
+                            margin: EdgeInsets.only(right: 5.w),
+                            alignment: Alignment.center,
+                            child: Image.asset(productCart[index].image,
+                                width: 35.w, fit: BoxFit.contain),
+                          );
+                        },
+                        itemCount: productCart.length,
+                      ),
+                    ),
+                    const Spacer(),
+                    const VerticalDivider(
+                      color: AppColorsManager.kScaffoldColor,
+                      thickness: 1.5,
+                      width: 2,
+                      endIndent: 10,
+                      indent: 10,
+                    ),
+                    widthSpace(10),
+                    Text("View Basket", style: AppTextStyle.font16WhiteW600),
+                    widthSpace(10),
+                    Badge(
+                      label: Text(
+                        productCart.length.toString(),
+                      ),
+                      isLabelVisible: productCart.isNotEmpty,
+                      
+                      child: SvgPicture.asset(AppAssets.cart,
+                          colorFilter: const ColorFilter.mode(
+                              AppColorsManager.kScaffoldColor,
+                              BlendMode.srcIn)),
+                    ),
+                  ],
+                )),
           ],
         ),
       ),
